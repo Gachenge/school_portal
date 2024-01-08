@@ -30,3 +30,10 @@ export const validateRemoveGrade = (grades: {gradeId: string, teacherId: string}
     })
     return delSchema.validate(grades)
 }
+
+export const validateId = (blog:{id: string}) => {
+    const idSchema = Joi.object({
+        id: Joi.string().guid({ version: 'uuidv4' })
+    })
+    return idSchema.validate(blog)
+}

@@ -100,3 +100,20 @@
 {"level":"error","message":"2024-01-05 20:22:16 Error: You do not have enough permissions","service":"user-service"}
 {"level":"error","message":"2024-01-05 21:32:34 Error: You do not have enough permissions","service":"user-service"}
 {"level":"error","message":"2024-01-05 21:33:12 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 15:20:54 Error: Book already exists","service":"user-service"}
+{"level":"error","message":"2024-01-07 16:07:19 Error: Book already exists","service":"user-service"}
+{"level":"error","message":"2024-01-07 16:40:36 Error: Book not found","service":"user-service"}
+{"level":"error","message":"2024-01-07 17:33:05 Error: User has overdue books","service":"user-service"}
+{"level":"error","message":"2024-01-07 17:35:54 Error: User has overdue books","service":"user-service"}
+{"level":"error","message":"2024-01-07 17:39:30 Error: User has overdue books","service":"user-service"}
+{"level":"error","message":"2024-01-07 21:14:54 Error: Book already exists","service":"user-service"}
+{"level":"error","message":"2024-01-07 21:27:48 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 21:28:12 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 21:28:56 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 21:29:47 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 21:31:46 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 21:31:52 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 21:38:29 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 22:16:12 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 22:25:30 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-07 22:25:49 Error: You do not have enough permissions","service":"user-service"}

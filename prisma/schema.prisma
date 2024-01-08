@@ -27,6 +27,7 @@ model User {
   updatedAt        DateTime        @updatedAt
   studentProfileId String?
   teacherProfileId String?
+  memberProfile    MemberProfile?
 }
 
 model StudentProfile {
@@ -49,6 +50,7 @@ enum Role {
   STUDENT
   TEACHER
   ADMIN
+  LIBRARIAN
 }
 
 model Post {
@@ -92,4 +94,39 @@ model SubjectGrade {
   grade     Float
   student   StudentProfile? @relation(fields: [studentId], references: [id])
   studentId String?
+}
+
+model Books {
+  id        String          @id @default(uuid())
+  title     String
+  author    String
+  copies    Int
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  borrowed  BorrowedBooks[]
+}
+
+model MemberProfile {
+  id            String          @id @default(uuid())
+  member        User            @relation(fields: [memberId], references: [id])
+  borrowedBooks BorrowedBooks[]
+  memberId      String          @unique
+  OverdueBooks  OverdueBooks[]
+}
+
+model OverdueBooks {
+  id     String          @id @default(uuid())
+  book   BorrowedBooks[]
+  member MemberProfile[]
+}
+
+model BorrowedBooks {
+  id             String        @id @default(uuid())
+  borrowedBy     MemberProfile @relation(fields: [memberId], references: [id])
+  borrowedBook   Books         @relation(fields: [booksId], references: [id])
+  dueDate        DateTime
+  memberId       String
+  booksId        String
+  OverdueBooks   OverdueBooks? @relation(fields: [overdueBooksId], references: [id])
+  overdueBooksId String?
 }

@@ -9,6 +9,7 @@ import { commentRouter } from "./comment/comment.router";
 import { subjectRouter } from "./subject/subject.router";
 import { teacherRouter } from "./teacher/teacher.router";
 import { studentRouter } from "./student/student.router";
+import { libraryRouter } from "./library/library.router";
 
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/api/post", commentRouter)
 app.use("/api/subjects", subjectRouter)
 app.use("/api/teachers", teacherRouter)
 app.use("/api/students", studentRouter)
+app.use("/api/library", libraryRouter)
 
 
 app.listen(PORT, () => {

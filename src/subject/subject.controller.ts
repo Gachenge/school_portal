@@ -2,7 +2,7 @@ import { getUser } from "../utils/helpers";
 import { Request, Response } from "express";
 import * as SubjectService from "../subject/subject.service"
 import { NotFoundError, UserNotSignedIn } from "../utils/errors";
-import { validateSubject } from "./subject.validator";
+import { validateId, validateSubject } from "./subject.validator";
 
 export const all_subjects =async (req: Request, resp: Response) => {
     try {
@@ -49,8 +49,12 @@ export const create_subject =async (req:Request, resp:Response) => {
 }
 
 export const get_subject_by_id =async (req:Request, resp:Response) => {
-    const id = req.params.id
     try {
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
         const { role } = await getUser(req) ?? { role: null };
         if (role === 'USER') {
             return resp.status(403).json({ error: "You are not authorised"})
@@ -70,8 +74,12 @@ export const get_subject_by_id =async (req:Request, resp:Response) => {
 }
 
 export const edit_subject =async (req:Request, resp:Response) => {
-    const id = req.params.id
     try {
+        const results = validateId({ id: req.params.id })
+        if (results.error) {
+            return resp.status(400).json({ error: results.error.details })
+        }
+        const { id } = results.value
         const { role } = await getUser(req) ?? { role: null };
         if (role !== 'ADMIN') {
             return resp.status(403).json({ error: "You are not authorised"})
@@ -95,8 +103,13 @@ export const edit_subject =async (req:Request, resp:Response) => {
 }
 
 export const delete_subject =async (req:Request, resp: Response) => {
-    const id = req.params.id
     try {
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
+        
         const { role } = await getUser(req) ?? { role: null };
         if (role !== 'ADMIN') {
             return resp.status(403).json({ error: "You are not authorised"})

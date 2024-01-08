@@ -90,3 +90,35 @@ export class TokenVerificationError extends Error {
         errorLog(this)
     }
 }
+
+export class UserNotVerified extends Error {
+    constructor() {
+        super("User is not verified")
+        this.name = "UserNotVerified"
+        warningLog(this)
+    }
+}
+
+export class UserHasOverdueBooks extends Error {
+    constructor() {
+        super("User has overdue books")
+        this.name = "OverdueBooks"
+        errorLog(this)
+    }
+}
+
+export class BookExists extends Error {
+    constructor() {
+        super("Book already exists")
+        this.name = "BookExists"
+        errorLog(this)
+    }
+}
+
+export class BookNotAvailable extends Error {
+    constructor() {
+        super("Book is not available")
+        this.name = "BookUnavailable"
+        warningLog(this)
+    }
+}

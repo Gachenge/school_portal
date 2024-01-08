@@ -6,3 +6,10 @@ export const validateSubject = (subject: {name: string}) => {
     })
     return subjectSchema.validate(subject)
 }
+
+export const validateId = (blog:{id: string}) => {
+    const idSchema = Joi.object({
+        id: Joi.string().guid({ version: 'uuidv4' })
+    })
+    return idSchema.validate(blog)
+}

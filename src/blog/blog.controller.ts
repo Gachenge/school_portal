@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { validateCreateBlog } from "./blog.validator";
+import { validateCreateBlog, validateEditBlog, validateId } from "./blog.validator";
 import * as BlogService from "../blog/blog.service";
 import { ForbiddenError, NotFoundError, UnexpectedError, UserNotSignedIn } from "../utils/errors";
 import { getUser } from "../utils/helpers";
@@ -46,9 +46,13 @@ export const getBlogsController = async (req: Request, resp: Response) => {
 
 
 export const getBlogById = async (req: Request, res: Response) => {
-    const id = req.params.id;
-
     try {
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return res.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
+
         const blog = await BlogService.getBlog(id);
 
         if (!blog) {
@@ -66,10 +70,17 @@ export const getBlogById = async (req: Request, res: Response) => {
 };
 
 export const editBlogById = async (req: Request, resp: Response) => {
-    const id = req.params.id;
-
     try {
-        const blog = req.body
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
+        const results = validateEditBlog(req.body)
+        if (results.error) {
+            return resp.status(400).json({ error: results.error.details })
+        }
+        const blog = results.value
         const { userId } = await getUser(req) ?? { userId: null };
 
         if (!userId) {
@@ -95,8 +106,12 @@ export const editBlogById = async (req: Request, resp: Response) => {
 };
 
 export const deleteBlogController = async (req: Request, resp: Response) => {
-    const id = req.params.id;
     try {
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
         const { userId, role } = await getUser(req) ?? { userId: null, role: null };
 
         const deleteBlog = await BlogService.deleteBlog(id, userId, role);

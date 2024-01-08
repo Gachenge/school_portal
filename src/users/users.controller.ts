@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
 import * as UserService from "../users/users.service";
 import { getUser } from "../utils/helpers";
-import { ForbiddenError, NotFoundError, UserNotSignedIn } from "../utils/errors";
+import { ForbiddenError, NotFoundError, UserNotSignedIn, WrongPassword } from "../utils/errors";
+import { validateEditUser, validateId, validatePasswordReset } from "./users.validator";
 
 export const getUsers = async (req: Request, resp: Response) => {
-    const { role } = await getUser(req) ?? { role: null };
-
-    if (role !== 'ADMIN') {
-        return resp.status(403).json({ error: "You are not authorised to access" })
-    }
     try {
+        const { role } = await getUser(req) ?? { role: null };
+
+        if (role !== 'ADMIN') {
+            return resp.status(403).json({ error: "You are not authorised to access" })
+        }
         const users = await UserService.allusers();
 
         if (!users) {
@@ -18,7 +19,11 @@ export const getUsers = async (req: Request, resp: Response) => {
 
         return resp.status(200).json({ success: true, users });
     } catch (error: any) {
-        if (error.status) {
+        if (error instanceof UserNotSignedIn) {
+            return resp.status(401).json({ error: "You are not signed in"})
+        } else if (error instanceof NotFoundError) {
+            return resp.status(404).json({ error: "User not found"})
+        } else if (error.status) {
             return resp.status(error.status).json({ error: error.message })
         }
         return resp.status(500).json({ error: "Internal server error" });
@@ -26,12 +31,17 @@ export const getUsers = async (req: Request, resp: Response) => {
 };
 
 export const getUserById = async (req: Request, resp: Response) => {
-    const { role } = await getUser(req) ?? { role: null };
-    if (role !== 'ADMIN') {
-        return resp.status(403).json({ error: "You are not authorised to access" })
-    }
-    const id = req.params.id;
     try {
+        const { role } = await getUser(req) ?? { role: null };
+        if (role !== 'ADMIN') {
+            return resp.status(403).json({ error: "You are not authorised to access" })
+        }
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
+        
         const user = await UserService.userById(id);
 
         if (!user) {
@@ -48,54 +58,64 @@ export const getUserById = async (req: Request, resp: Response) => {
     }
 };
 
-export const editUserById = async (req: Request, resp: Response) => {
-    const id = req.params.id;
-
+export const editUserById = async (req:Request, resp:Response) => {
     try {
-        const { userId } = await getUser(req) ?? { userId: null };
-        if (id !== userId) {
-            return resp.status(401).json({ error: "You are not allowed to edit"})
+        const { userId } = await getUser(req)
+        const results = validateEditUser(req.body)
+        if (results.error) {
+            return resp.status(400).json({ error: results.error.details })
         }
-    } catch(error: any) {
+        const { username, email, phone, avatar } = results.value
+        const edited = await UserService.editUser(userId, username, email, phone, avatar)
+        return resp.status(200).json({ success:true, edited})
+    } catch (error:any) {
         if (error instanceof NotFoundError) {
-            return resp.status(404).json({ error: "User profile not found" })
+            return resp.status(404).json({ error: "User not found"})
         } else if (error instanceof UserNotSignedIn) {
-            return resp.status(401).json({ error: "User not signed in" })
+            return resp.status(401).json({ error: "You are not signed in"})
         }
-        resp.status(500).json({ error: error.message })
+        return resp.status(500).json({ error: "Internal server error"})
     }
+}
 
-    const updatedUserDetails = req.body;
-
+export const editUserPassword =async (req:Request, resp:Response) => {
     try {
-        const user = await UserService.userById(id);
-        if (!user) {
-            return resp.status(404).json({ error: "User not found" });
+        const { userId } = await getUser(req)
+        const result = validatePasswordReset(req.body)
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
         }
-
-        const updatedUser = await UserService.editUser(id, updatedUserDetails);
-
-        // Destructure the user object and create a new object without the password field
-        const { password, ...userWithoutPassword } = updatedUser;
-
-        resp.status(200).json({ success: true, user: userWithoutPassword });
-    } catch (error: any) {
-        if (error instanceof NotFoundError) {
-            return resp.status(404).json({ error: "User not found" })
-        } 
-        resp.status(500).json({ error: error.message });
+        const { old_password, password, confirm_password } = result.value
+        const updated = await UserService.edit_user_password(userId, old_password, password, confirm_password)
+        return resp.status(200).json({ success:true, updated })
+    } catch (error:any) {
+        if (error instanceof UserNotSignedIn) {
+            return resp.status(401).json({ error: "You are not signed in"})
+        } else if (error instanceof NotFoundError) {
+            return resp.status(404).json({ error: "User not found"})
+        } else if (error.status) {
+            return resp.status(error.status).json({ error: error.message })
+        } else if (error instanceof WrongPassword) {
+            return resp.status(403).json({ error: "You entered the wrong password"})
+        }
+        return resp.status(500).json({ error: "Internal server error" });
     }
-};
+}
 
 export const delUser = async (req: Request, resp: Response) => {
-    const { role } = await getUser(req) ?? { role: null };
-    if (role !== 'ADMIN') {
-        return resp.status(403).json({ error: "You are not authorised to delete" })
-    }
-    const id = req.params.id;
-
     try {
-        const delUser = await UserService.deleteUser(id)
+        const { role } = await getUser(req) ?? { role: null };
+        if (role !== 'ADMIN') {
+            return resp.status(403).json({ error: "You are not authorised to delete" })
+        }
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
+
+        await UserService.deleteUser(id)
+        return resp.status(204).json()
     } catch (error: any) {
         if (error instanceof NotFoundError) {
             return resp.status(404).json({ error: "User profile not found" })
@@ -105,17 +125,5 @@ export const delUser = async (req: Request, resp: Response) => {
             return resp.status(403).json()
         }
         return resp.status(500).json({ error: error.message });
-    }
-
-    try {
-        const deletedUser = await UserService.deleteUser(id);
-
-        return resp.status(204).json({ success: true, message: "User deleted successfully" });
-    } catch (error: any) {
-        if (error instanceof NotFoundError) {
-            return resp.status(404).json({ error: "User not found" });
-        }
-        console.error("Error deleting user: ", error.message);
-        return resp.status(500).json({ error: "Internal server error" });
     }
 };

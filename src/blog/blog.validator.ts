@@ -16,3 +16,19 @@ export const validateGetBlogById = (id: {params: string}) => {
     })
     return idSchema.validate(id)
 }
+
+export const validateId = (blog:{id: string}) => {
+    const idSchema = Joi.object({
+        id: Joi.string().guid({ version: 'uuidv4' })
+    })
+    return idSchema.validate(blog)
+}
+
+export const validateEditBlog = (blog: {title:string, body:string, image:string}) => {
+    const editSchema = Joi.object({
+        title: Joi.string(),
+        body: Joi.string(),
+        image: Joi.string()
+    })
+    return editSchema.validate(blog)
+}

@@ -77,7 +77,6 @@ export const add_subject =async (req:Request, resp:Response) => {
             return resp.status(403).json({ error: "You are not authorised" })
         }
         const result = validateSubject(req.body)
-        console.log(result)
         if (result.error) {
             return resp.status(400).json({ error: result.error.details})
         }

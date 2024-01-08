@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import * as TeacherService from "../teacher/teacher.service"
 import { getUser } from "../utils/helpers"
 import { AlreadyRegistered, ForbiddenError, NotFoundError, UserNotSignedIn } from "../utils/errors";
-import { validateGrade, validateRemoveGrade, validateTeacher, validateTeacherSubject } from "./teacher.validator";
+import { validateGrade, validateId, validateRemoveGrade, validateTeacher, validateTeacherSubject } from "./teacher.validator";
 
 export const all_teachers =async (req:Request, resp:Response) => {
     try {
@@ -51,12 +51,16 @@ export const new_teachers =async (req:Request, resp: Response) => {
 }
 
 export const get_teacher_by_id =async (req:Request, resp:Response) => {
-    const id = req.params.id
     try {
         const { role } = await getUser(req) ?? { role: null };
         if (role !== 'ADMIN' && role !== 'TEACHER') {
             return resp.status(403).json({ error: "You are not authorised"})
         }
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
         const teacher = await TeacherService.teacherById(id)
         if (!teacher) {
             throw new NotFoundError("Teacher not found")

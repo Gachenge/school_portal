@@ -1,6 +1,7 @@
-import { Role } from "@prisma/client";
 import { db } from "../utils/db.server";
-import { UnexpectedError, NotFoundError } from "../utils/errors";
+import { NotFoundError, WrongPassword } from "../utils/errors";
+import { sendVerificationEmail } from "../utils/helpers";
+import * as bcrypt from 'bcrypt';
 
 type User = {
     id: string,
@@ -8,17 +9,6 @@ type User = {
     email: string,
     isActive: boolean
     role: string
-}
-
-type EditUser = {
-    id?: string,
-    username?: string,
-    email?: string,
-    isActive?: boolean,
-    profile?: {
-        role?: Role
-        emailToken?: string
-    }
 }
 
 export const allusers = async (): Promise<User[]> => {
@@ -47,53 +37,80 @@ export const userById = async (id: string): Promise<User> => {
     try {
         const user = await db.user.findUnique({
             where: { id },
+            select: {
+                id:true,
+                isActive:true,
+                username:true,
+                email:true,
+                phone:true,
+                avatar:true,
+                role:true
+            }
         });
 
         if (!user) {
             throw new NotFoundError("User not found");
         }
 
-        const { id: userId, username, email, isActive, role } = user;
+        return user;
 
-        return {
-            id: userId,
-            username,
-            email,
-            isActive,
-            role,
-        };
     } catch (error: any) {
         throw error
     }
 };
 
-export const editUser = async (id: string, updatedDetails: EditUser) => {
+export const editUser = async (id: string, username: string, email: string, phone: string, avatar: string) => {
     try {
-        const existingUser = await db.user.findUnique({
-            where: { id },
-        });
-
-        if (!existingUser) {
-            throw new NotFoundError("User not found");
-        }
-
-        // Filter out immutable fields from the updated details
-        const { id: userId, isActive, ...filteredUpdatedDetails } = updatedDetails;
-
-        // Perform the update with the filtered updated details
-        const updatedUser = await db.user.update({
+        const user = await userById(id);
+        
+        const updateUser = await db.user.update({
             where: { id },
             data: {
-                ...existingUser,
-                ...filteredUpdatedDetails,
-            },
+                username,
+                email,
+                phone,
+                avatar,
+            }
         });
 
-        return updatedUser
+        if (email !== user.email) {
+            const activate = await sendVerificationEmail(email, id);
+            await db.user.update({
+                where: { id },
+                data: {
+                    isActive: false
+                }
+            })
+        }
     } catch (error: any) {
-        throw error
+        throw error;
     }
 };
+
+export const edit_user_password =async (id:string, old_password:string, passwords:string, confirm_password:string) => {
+    try {
+        const user = await db.user.findUnique({ where: { id }})
+        if (!user) {
+            throw new NotFoundError("User not found")
+        }
+        
+        const isPasswordValid = await bcrypt.compare(old_password, user.password);
+        if (!isPasswordValid) {
+            throw new WrongPassword()
+        }
+
+        const updateUser = await db.user.update({
+            where: { id },
+            data: {
+                password: await bcrypt.hash(passwords, 10)
+            }
+        })
+
+    } catch (error:any) {
+        
+    }
+}
+
 
 export const deleteUser = async (id: string) => {
     try {

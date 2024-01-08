@@ -1,12 +1,16 @@
 import * as CommentService from "../comment/comment.service";
 import { Request, Response } from "express";
 import { getUser } from "../utils/helpers";
-import { validateComment } from "./comment.validator";
+import { validateComment, validateId } from "./comment.validator";
 import { ForbiddenError, NotFoundError, UserNotSignedIn } from "../utils/errors";
 
 export const postComment = async (req: Request, resp: Response) => {
-    const postId = req.params.id
     try {
+        const results = validateId({ id: req.params.id })
+        if (results.error) {
+            return resp.status(400).json({ error: results.error.details })
+        }
+        const { id } = results.value
 
         const { userId } = (await getUser(req)) ?? { userId: null };
 
@@ -21,7 +25,7 @@ export const postComment = async (req: Request, resp: Response) => {
         }
 
         const { post, image } = result.value;
-        const comment = await CommentService.createComment(postId, userId, post, image);
+        const comment = await CommentService.createComment(id, userId, post, image);
 
         return resp.status(201).json({ success: true, comment });
     } catch (error: any) {
@@ -36,9 +40,13 @@ export const postComment = async (req: Request, resp: Response) => {
 };
 
 export const getComments =async (req:Request, resp: Response) => {
-    const postId = req.params.id
     try {
-        const comments = await CommentService.getComments(postId)
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
+        const comments = await CommentService.getComments(id)
         return resp.status(200).json({ success: true, comments})
     } catch (error: any) {
         return resp.status(500).json({ error: error.message })
@@ -46,9 +54,13 @@ export const getComments =async (req:Request, resp: Response) => {
 }
 
 export const getCommentById =async (req:Request, resp: Response) => {
-    const commentId = req.params.id
     try {
-        const comment = await CommentService.getCommentById(commentId)
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
+        const comment = await CommentService.getCommentById(id)
         if (!comment) {
             resp.status(404).json('Comment not found')
         }
@@ -62,8 +74,12 @@ export const getCommentById =async (req:Request, resp: Response) => {
 }
 
 export const editCommentById = async (req: Request, resp: Response) => {
-    const id = req.params.id;
     try {
+        const results = validateId({ id: req.params.id })
+        if (results.error) {
+            return resp.status(400).json({ error: results.error.details })
+        }
+        const { id } = results.value
         const result = validateComment(req.body);
         if (result.error) {
             return resp.status(400).json({ error: result.error.details });
@@ -94,8 +110,12 @@ export const editCommentById = async (req: Request, resp: Response) => {
 };
 
 export const deleteCommentById = async (req: Request, resp: Response) => {
-    const id = req.params.id;
     try {
+        const result = validateId({ id: req.params.id })
+        if (result.error) {
+            return resp.status(400).json({ error: result.error.details })
+        }
+        const { id } = result.value
         const { userId, role } = await getUser(req) ?? { userId: null, role: null };
 
         const deleteComment = await CommentService.deleteComment(id, userId, role);
