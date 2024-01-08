@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { validateCreateBlog, validateEditBlog, validateId } from "./blog.validator";
 import * as BlogService from "../blog/blog.service";
-import { ForbiddenError, NotFoundError, UnexpectedError, UserNotSignedIn } from "../utils/errors";
+import { AlreadyRegistered, ForbiddenError, NotFoundError, UserNotSignedIn } from "../utils/errors";
 import { getUser } from "../utils/helpers";
 
 export const createBlogController = async (req: Request, resp: Response) => {
@@ -26,6 +26,8 @@ export const createBlogController = async (req: Request, resp: Response) => {
     } catch (error: any) {
         if (error instanceof UserNotSignedIn) {
             return resp.status(401).json({ error: "User not signed in"})
+        } else if (error instanceof AlreadyRegistered) {
+            return resp.status(409).json({ error: error.message })
         } else if (error.status) {
             return resp.status(error.status).json({ error: error.message });
         }

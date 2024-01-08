@@ -1,5 +1,5 @@
 import { db } from "../utils/db.server";
-import { NotFoundError, WrongPassword } from "../utils/errors";
+import { AlreadyRegistered, NotFoundError, WrongPassword } from "../utils/errors";
 import { sendVerificationEmail } from "../utils/helpers";
 import * as bcrypt from 'bcrypt';
 
@@ -62,6 +62,19 @@ export const userById = async (id: string): Promise<User> => {
 export const editUser = async (id: string, username: string, email: string, phone: string, avatar: string) => {
     try {
         const user = await userById(id);
+
+        if (username) {
+            const usernameExists = await db.user.findUnique({ where: {username}})
+            if (usernameExists) {
+            throw new AlreadyRegistered("Username is already registered")
+        }
+        }
+        if (email) {
+            const emailExists = await db.user.findUnique({ where: {email}})
+            if (emailExists) {
+                throw new AlreadyRegistered("Email is already registered")
+            }
+        }
         
         const updateUser = await db.user.update({
             where: { id },

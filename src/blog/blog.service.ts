@@ -1,6 +1,6 @@
 import { Role } from "@prisma/client";
 import { db } from "../utils/db.server";
-import { ForbiddenError, NotFoundError, UnexpectedError, UserNotSignedIn } from "../utils/errors";
+import { AlreadyRegistered, ForbiddenError, NotFoundError } from "../utils/errors";
 
 
 type Blog = {
@@ -19,6 +19,12 @@ type Post = {
 
 export const createBlog = async (blog: Blog, userId: string) => {
     try {
+        const blogExist = await db.post.findFirst({
+            where: {title:blog.title, body:blog.body, userId:userId}
+        })
+        if (blogExist) {
+            throw new AlreadyRegistered("This blog has already been created")
+        }
         // Create the blog post with a unique constraint check
         const createdBlog = await db.post.create({
             data: {

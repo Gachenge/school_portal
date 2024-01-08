@@ -14,7 +14,7 @@ export const newStudents =async (id:string) => {
     try {
         const existingStudent = await db.studentProfile.findUnique({ where: { studentId: id }})
         if (existingStudent) {
-            throw new AlreadyRegistered("Teacher already regisered")
+            throw new AlreadyRegistered("Student already regisered")
         }
         const existingUser = await db.user.findUnique({ where: { id }})
         if (!existingUser) {

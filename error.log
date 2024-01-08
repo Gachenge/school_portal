@@ -117,3 +117,5 @@
 {"level":"error","message":"2024-01-07 22:16:12 Error: You do not have enough permissions","service":"user-service"}
 {"level":"error","message":"2024-01-07 22:25:30 Error: You do not have enough permissions","service":"user-service"}
 {"level":"error","message":"2024-01-07 22:25:49 Error: You do not have enough permissions","service":"user-service"}
+{"level":"error","message":"2024-01-08 17:59:10 Error: Wrong password","service":"user-service"}
+{"level":"error","message":"2024-01-08 17:59:39 Error: You are not authorised","service":"user-service"}

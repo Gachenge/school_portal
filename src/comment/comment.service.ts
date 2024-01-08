@@ -1,8 +1,6 @@
-import { string } from "joi";
 import { getBlog } from "../blog/blog.service";
 import { db } from "../utils/db.server";
-import { ForbiddenError, NotFoundError, UnexpectedError } from "../utils/errors";
-import { getUser } from "../utils/helpers";
+import { ForbiddenError, NotFoundError } from "../utils/errors";
 import { Role } from "@prisma/client";
 
 type Post = {

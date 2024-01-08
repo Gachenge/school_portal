@@ -13,8 +13,8 @@ export const errorLog = (errors: any) => {
 
 export class AlreadyRegistered extends Error {
     constructor(message: string) {
-        super("User is already registered");
-        this.name = "UserAlreadyRegistered";
+        super(message);
+        this.name = "AlreadyRegistered";
         warningLog(this);
     }
 }
@@ -61,7 +61,7 @@ export class UserNotSignedIn extends Error {
 
 export class ForbiddenError extends Error {
     constructor(message: string) {
-        super("You do not have enough permissions");
+        super(message);
         this.name = "ForbiddenError";
         errorLog(this);
     }
@@ -69,7 +69,7 @@ export class ForbiddenError extends Error {
 
 export class NotFoundError extends Error {
     constructor(message: string) {
-        super(`Not found: ${message}`);
+        super(message);
         this.name = "NotFoundError";
         warningLog(this);
     }

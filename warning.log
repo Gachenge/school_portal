@@ -299,3 +299,21 @@
 {"level":"warn","message":"2024-01-08 13:08:50 Warning: Not found: This book was not borrowed by this member","service":"user-service"}
 {"level":"warn","message":"2024-01-08 13:10:22 Warning: Not found: This book was not borrowed by this member","service":"user-service"}
 {"level":"warn","message":"2024-01-08 14:34:26 Warning: You are not logged in","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:12:12 Warning: User is already registered","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:12:28 Warning: User is already registered","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:13:30 Warning: You are not logged in","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:14:01 Warning: Not found: User not found","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:25:45 Warning: User is already registered","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:26:53 Warning: Email is already registered","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:37:08 Warning: You are not logged in","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:39:10 Warning: Email is already registered","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:41:08 Warning: User not found","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:49:06 Warning: This blog has already been created","service":"user-service"}
+{"level":"warn","message":"2024-01-08 17:58:52 Warning: You are not logged in","service":"user-service"}
+{"level":"error","message":"2024-01-08 17:59:10 Error: Wrong password","service":"user-service"}
+{"level":"error","message":"2024-01-08 17:59:39 Error: You are not authorised","service":"user-service"}
+{"level":"warn","message":"2024-01-08 18:01:50 Warning: Blog not found","service":"user-service"}
+{"level":"warn","message":"2024-01-08 18:03:39 Warning: Comment not found","service":"user-service"}
+{"level":"warn","message":"2024-01-08 18:03:50 Warning: Comment not found","service":"user-service"}
+{"level":"warn","message":"2024-01-08 18:03:52 Warning: Comment not found","service":"user-service"}
+{"level":"warn","message":"2024-01-08 18:07:33 Warning: Subject not found","service":"user-service"}

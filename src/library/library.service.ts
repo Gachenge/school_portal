@@ -1,7 +1,6 @@
 import { Role } from "@prisma/client";
 import { db } from "../utils/db.server";
 import { AlreadyRegistered, BookExists, BookNotAvailable, ForbiddenError, NotFoundError, UserHasOverdueBooks, UserNotVerified } from "../utils/errors";
-import { connect } from "http2";
 
 export const allMembers =async () => {
   try {

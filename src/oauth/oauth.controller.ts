@@ -23,7 +23,7 @@ export const signupController = async (req: Request, resp: Response) => {
     return resp.status(201).json({ success: true, id, email });
   } catch (error: any) {
     if (error instanceof AlreadyRegistered) {
-      return resp.status(409).json("User already registered");
+      return resp.status(409).json(error.message);
     } else if (error.status) {
       return resp.status(error.status).json(error.message);
     } else {

@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import * as LibraryService from "../library/library.service"
 import { getUser } from "../utils/helpers"
-import { AlreadyRegistered, BookExists, BookNotAvailable, ForbiddenError, NotFoundError, UserHasOverdueBooks, UserNotSignedIn, UserNotVerified } from "../utils/errors"
+import { AlreadyRegistered, BookExists, BookNotAvailable, ForbiddenError, NotFoundError, UserHasOverdueBooks, UserNotSignedIn } from "../utils/errors"
 import { validateBorrow, validateEditBook, validateId, validateIdBody, validateNewBook } from "./library.validator"
 
 export const all_members =async (req:Request, resp:Response) => {
@@ -44,6 +44,8 @@ export const new_members =async (req:Request, resp:Response) => {
             return resp.status(404).json({ error: "User not found" })
         } else if (error instanceof ForbiddenError) {
             return resp.status(403).json({ error: "You are not authorised"})
+        } else if (error instanceof AlreadyRegistered) {
+            return resp.status(409).json({ error: error.message })
         }
         return resp.status(500).json({ error: "Internal server error" })
     }

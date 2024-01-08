@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import * as UserService from "../users/users.service";
 import { getUser } from "../utils/helpers";
-import { ForbiddenError, NotFoundError, UserNotSignedIn, WrongPassword } from "../utils/errors";
+import { AlreadyRegistered, ForbiddenError, NotFoundError, UserNotSignedIn, WrongPassword } from "../utils/errors";
 import { validateEditUser, validateId, validatePasswordReset } from "./users.validator";
 
 export const getUsers = async (req: Request, resp: Response) => {
@@ -69,10 +69,13 @@ export const editUserById = async (req:Request, resp:Response) => {
         const edited = await UserService.editUser(userId, username, email, phone, avatar)
         return resp.status(200).json({ success:true, edited})
     } catch (error:any) {
+        console.log(error)
         if (error instanceof NotFoundError) {
             return resp.status(404).json({ error: "User not found"})
         } else if (error instanceof UserNotSignedIn) {
             return resp.status(401).json({ error: "You are not signed in"})
+        } else if (error instanceof AlreadyRegistered) {
+            return resp.status(409).json({ error: error.message })
         }
         return resp.status(500).json({ error: "Internal server error"})
     }
