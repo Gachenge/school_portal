@@ -9,6 +9,9 @@ This is an OpenAPI 3.0 specification for a School App API. This API helps a scho
 - [Comments](#comments)
 - [Library](#library)
 - [Student](#student)
+- [Teachers](#teachers)
+- [Security](#security)
+- [Licence](#license)
 
 ## Authentication
  
