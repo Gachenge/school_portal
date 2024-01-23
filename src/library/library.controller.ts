@@ -108,7 +108,6 @@ export const all_books =async (req:Request, resp:Response) => {
         
         return resp.status(200).json({ success:true, books})
     } catch (error:any) {
-        console.log(error)
         if (error instanceof UserNotSignedIn) {
             return resp.status(401).json({ error: "You are not signed in" })
         } else if (error instanceof NotFoundError) {
@@ -163,8 +162,6 @@ export const book_by_id =async (req:Request, resp:Response) => {
             return resp.status(401).json({ error: "You are not signed in" })
         } else if (error instanceof NotFoundError) {
             return resp.status(404).json({ error: "Book not found" })
-        } else if (error instanceof BookExists) {
-            return resp.status(409).json({ error: "Book already registered" })
         } else if (error instanceof ForbiddenError) {
             return resp.status(403).json({ error: "You are not authorised"})
         }
@@ -220,8 +217,6 @@ export const del_book =async (req:Request, resp:Response) => {
             return resp.status(401).json({ error: "You are not signed in" })
         } else if (error instanceof NotFoundError) {
             return resp.status(404).json({ error: "Book not found" })
-        } else if (error instanceof BookExists) {
-            return resp.status(409).json({ error: "Book already registered" })
         } else if (error instanceof ForbiddenError) {
             return resp.status(403).json({ error: "You are not authorised"})
         }
