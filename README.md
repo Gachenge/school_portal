@@ -8,7 +8,7 @@ This is an OpenAPI 3.0 specification for a School App API. This API helps a scho
 - [Blog](#blog)
 - [Comments](#comments)
 - [Library](#library)
-- [Student Operations](#student-operations)
+- [Student](#student)
 
 ## Authentication
  
@@ -423,42 +423,223 @@ This is an OpenAPI 3.0 specification for a School App API. This API helps a scho
         - **404** User not found
         - **500** Internal server error
 
+## Student
+
+- **Add Students:** add new students
+
+    - **Endpoint:** `/api/students`
+    - **HTTP Method:** POST
+    - **Description:** An admin can add new students from signed up users
+    - **Request Body Example:**
+    ```json
+    {
+        "id": "some user's id"
+    }
+    ```
+    - **Responses:**
+        - **200** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** User not found
+        - **409** Student already registered
+        - **500** Internal server error
+
+- **Student by Id:** get a particular student by their id
+
+    - **Endpoint:** `/api/students/:id`
+    - **HTTP Method:** GET
+    - **Description:** Get more details about a particular student. Only an admin or teacher can access this.
+    - **Responses:**
+        - **200** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** User not found
+\        - **500** Internal server error
+    
+- **Add Student Subject:** Add a subject to a students profile
+
+    - **Endpoint:** `/api/students/subject`
+    - **HTTP Method:** POST
+    - **Description:** A student can add subjects to their profile. Students can pick the subjects they take
+    - **Request Body Example:**
+    ```json
+    {
+        "subjectName": "Example subject"
+    }
+    ```
+    - **Responses:**
+        - **200** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** Subject not found
+        - **409** Subject already registered
+        - **500** Internal server error
+
+- **Delete Student Subject:** Delete a subject from a students profile
+
+    - **Endpoint:** `/api/students/subject`
+    - **HTTP Method:** PATCH
+    - **Description:** A teacher or an admin can remove subjects from a student's profile.
+    - **Request Body Example:**
+    ```json
+    {
+        "studentId": "a student's id",
+        "subjectName": "Example subject"
+    }
+    ```
+    - **Responses:**
+        - **204** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** Subject not found
+        - **500** Internal server error
+
+- **View grades:** View student grades
+
+    - **Endpoint:** `/api/students/grades`
+    - **HTTP Method:** GET
+    - **Description:** A student can view their own grades for all the subjects they take
+    - **Responses:**
+        - **200** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** Subject not found
+        - **500** Internal server error
+
+## Teachers
+
+- **All teachers:** Get all teachers
+
+    - **Endpoint:** `/api/teachers`
+    - **HTTP Method** GET
+    - **Description:** an admin or a teacher can get a list of all teachers registered
+    - **Responses:**
+        - **200** Successful response
+        - **401** User not signed in
+        - **403** User not authorised
+        - **500** Internal server error
+
+- **Add teachers:** Create teacher
+
+    - **Endpoint:** `/api/teachers`
+    - **HTTP Method** POST
+    - **Description:** An admin can create new teachers from the users already signed in
+    - **Request Body Example:**
+    ```json
+    {
+        "id": "some user's id"
+    }
+    ```
+    - **Responses:**
+        - **200** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** User not found
+        - **409** Teacher already registered
+        - **500** Internal server error
+
+- **Teacher By Id:** Get a teacher by id
+
+    - **Endpoint:** `/api/teachers/:id`
+    - **HTTP Method** GET
+    - **Description:** Get more details on a teacher by the teacher id
+    - **Responses:**
+        - **200** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** User not found
+        - **500** Internal server error
+
+- **Teacher Subject:** Add subjects to a teachers profile
+
+    - **Endpoint:** `/api/teachers/subjects`
+    - **HTTP Method** POST
+    - **Description:** Add the subjects the teacher teaches. This is done by the admin
+    - **Request Body Example:**
+    ```json
+    {
+        "teacherId": "some teacher's id",
+        "subjectName": "some subject name"
+    }
+    ```
+    - **Responses:**
+        - **200** Successsful response
+        - **400** Invalid details
+        - **403** You are not authorised
+        - **404** Teacher or subject not found
+        - **500** Internal server error
+
+- **Remove subject:** Remove subject from a teachers profile
+
+    - **Endpoint:** `/api/teachers/subjects`
+    - **HTTP Method** PATCH
+    - **Description:** Remove a subject from a teachers profile
+    - **Request Body Example:**
+    ```json
+    {
+        "teacherId": "some teacher's id",
+        "subjectName": "some subject name"
+    }
+    ```
+    - **Responses:**
+        - **200** Successsful response
+        - **400** Invalid details
+        - **403** You are not authorised
+        - **404** Teacher or subject not found
+        - **500** Internal server error
+
+
+- **Grade students:** Add a grade to a students profile
+
+    - **Endpoint:** `/api/teachers/grade`
+    - **HTTP Method:** POST
+    - **Description:** A teacher can grade all students taking the subject they teach
+    - **Request Body Example:**
+    ```json
+    {
+        "studentId": "some student's id",
+        "subjectName": "some subject name",
+        "studentGrade": "the grade"
+    }
+    ```
+    - **Responses:**
+        - **200** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** User not found
+        - **500** Internal server error
+
+- **Remove grade:** Remove grade from students profile
+
+    - **Endpoint:** `/api/teachers/grade`
+    - **HTTP Method:** PATCH
+    - **Description:** A teacher can edit a students grade for the subject they teach
+     - **Request Body Example:**
+    ```json
+    {
+        "gradeId": "the grade"
+    }
+    ```
+    - **Responses:**
+        - **200** Successful response
+        - **400** Invalid details
+        - **401** User not signed in
+        - **403** User not authorised
+        - **404** User not found
+        - **500** Internal server error
+
 
 ## Security
 
 - JWT Token Authentication is used for securing the API. on login, an access token cookie is assigned to the user
-
-## Schemas
-
-### Basemodel
-
-- **id:** Unique identifier of the model.
-- **created_at:** Timestamp of when the model was created.
-- **updated_at:** Timestamp of when the model was last updated.
-- **formatted_created_at:** Formatted created timestamp.
-- **formatted_updated_at:** Formatted updated timestamp.
-
-### User
-
-- **name:** User's name.
-- **email:** User's email address.
-- **avatar:** URL of the user's avatar image.
-- **token:** User's authentication token.
-- **password:** User's account password.
-- **hasBooks:** Boolean value indicating whether the user has borrowed books.
-- **role:** User's role.
-
-### Books
-
-- **title:** Book title.
-- **copies:** Number of copies per book.
-
-### BorrowedBooks
-
-- **user_id:** The user's ID.
-- **book_id:** The book's ID.
-- **dueDate:** The due date for returning the borrowed book.
-- **is_overdue:** Indicates whether the book is overdue.
 
 ## License
 

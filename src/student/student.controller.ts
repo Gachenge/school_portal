@@ -39,7 +39,7 @@ export const new_students =async (req:Request, resp:Response) => {
         if (error instanceof UserNotSignedIn) {
             return resp.status(401).json({ error: "You are not signed in"})
         } else if (error instanceof NotFoundError) {
-            return resp.status(404).json({ error: "Students not found" })
+            return resp.status(404).json({ error: "User not found" })
         } else if (error instanceof AlreadyRegistered) {
             return resp.status(409).json({ error: "Student is already registered"})
         }
@@ -87,9 +87,9 @@ export const add_subject =async (req:Request, resp:Response) => {
         if (error instanceof UserNotSignedIn) {
             return resp.status(401).json({ error: "You are not signed in"})
         } else if (error instanceof NotFoundError) {
-            return resp.status(404).json({ error: "Students not found" })
+            return resp.status(404).json({ error: "Subject not found" })
         } else if (error instanceof AlreadyRegistered) {
-            return resp.status(409).json({ error: "Student is already registered"})
+            return resp.status(409).json({ error: "Subject is already registered"})
         }
         return resp.status(500).json({ error: "Internal server error" })
     }
@@ -98,7 +98,7 @@ export const add_subject =async (req:Request, resp:Response) => {
 export const del_subject =async (req:Request, resp:Response) => {
     try {
         const { userId=null, role=null } = await getUser(req)
-        if (role !== 'STUDENT') {
+        if (role !== 'ADMIN' && role !== 'TEACHER') {
             return resp.status(403).json({ error: "You are not authorised" })
         }
         const result = validateDeleteSubject(req.body)
