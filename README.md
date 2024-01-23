@@ -11,7 +11,6 @@ This is an OpenAPI 3.0 specification for a School App API. This API helps a scho
 - [Student](#student)
 - [Teachers](#teachers)
 - [Security](#security)
-- [Licence](#license)
 
 ## Authentication
  
@@ -644,9 +643,7 @@ This is an OpenAPI 3.0 specification for a School App API. This API helps a scho
 
 - JWT Token Authentication is used for securing the API. on login, an access token cookie is assigned to the user
 
-## License
 
-This API is available under the [MIT License](https://opensource.org/licenses/MIT).
 
 If you have any questions or need further information, please contact the author at gachenge1@gmail.com.
 
