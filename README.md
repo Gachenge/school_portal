@@ -8,6 +8,8 @@ This is an OpenAPI 3.0 specification for a School App API. This API helps a scho
 - [Blog](#blog)
 - [Comments](#comments)
 - [Library](#library)
+  - [Books](#books)
+  - [Members](#members)
 - [Student](#student)
 - [Teachers](#teachers)
 - [Security](#security)
@@ -641,10 +643,4 @@ This is an OpenAPI 3.0 specification for a School App API. This API helps a scho
 
 ## Security
 
-- JWT Token Authentication is used for securing the API. on login, an access token cookie is assigned to the user
-
-
-
-If you have any questions or need further information, please contact the author at gachenge1@gmail.com.
-
-API Version: 1.0.0
+- JWT Token Authentication is used for securing the API. on login, an access token cookie is assigned to the user. A refresh token for the user is also stored in redis and used to refresh the users session
